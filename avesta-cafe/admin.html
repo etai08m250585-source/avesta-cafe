@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بەڕێوەبەری ئاڤێستا کافێ - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background: #121212; color: #fff; padding: 20px; direction: rtl; }
+        h1 { color: #d4af37; text-align: center; }
+        .order-box { background: #1e1b18; border: 1px solid #d4af37; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
+        .clear-btn { background: #590707; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: block; margin: 20px auto; font-family: 'Vazirmatn', sans-serif; }
+    </style>
+</head>
+<body>
+    <h1>📋 بەڕێوەبەری داواکارییەکانی ئاڤێستا کافێ</h1>
+    <p style="text-align: center; color: #aaa;">ئەم پەڕەیە تەنها بۆ تۆیە و وردەکاری داواکاری خەڵکی لێرە دەردەکەوێت.</p>
+    
+    <div id="orders-container"></div>
+    
+    <button class="clear-btn" onclick="clearOrders()">سڕینەوەی هەموو داواکارییەکان</button>
+
+    <script>
+        function loadOrders() {
+            let container = document.getElementById('orders-container');
+            let orders = JSON.parse(localStorage.getItem('cafeOrders')) || [];
+
+            if (orders.length === 0) {
+                container.innerHTML = "<p style='text-align: center; color: #777;'>هیچ داواکارییەکی نوێ نییە.</p>";
+                return;
+            }
+
+            container.innerHTML = "";
+            orders.forEach((order, index) => {
+                let itemsText = order.items.map(i => `${i.name} (${i.price} د.ع)`).join('، ');
+                container.innerHTML += `
+                    <div class="order-box">
+                        <h3>داواکاری ژمارە ${index + 1}</h3>
+                        <p><strong>کاڵاکان:</strong> ${itemsText}</p>
+                        <p style="color: #d4af37; font-size: 0.85rem;">⏰ کات: ${order.time}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function clearOrders() {
+            localStorage.removeItem('cafeOrders');
+            loadOrders();
+        }
+
+        loadOrders();
+        // نوێکردنەوەی خۆکار بۆ ئەوەی هەر کە داواکارییەکی نوێ هات ڕاستەوخۆ دیار بێت
+        setInterval(loadOrders, 3000);
+    </script>
+</body>
+</html>
